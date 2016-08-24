@@ -2,10 +2,7 @@
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
   if (text.indexOf('/') !== -1) {
-    suggest([{
-      content: '',
-      description: `Golinks may not contain slashes.`,
-    }]);
+    suggest([]);
     return;
   }
 
