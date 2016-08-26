@@ -15,10 +15,7 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
       description: `Delete Golink for <match>${text}</match>`,
     }]);
   } else {
-    let suggestions = [{
-      content: getCreateSuggestion(text),
-      description: `Create Golink for <match>${text}</match>`,
-    }];
+    let suggestions = [];
 
     chrome.omnibox.setDefaultSuggestion({
       description: `Create Golink for <match>${text}</match>`,
@@ -30,7 +27,7 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
       suggestions = [{
         content: tag,
         description: `<match>${tag}</match> <url>${url2}</url>`,
-      }].concat(suggestions);
+      }];
     }
 
     suggest(suggestions);
@@ -112,7 +109,7 @@ function getRemoveURL(tag) {
 
 function getEditTag(text) {
   return text.indexOf(`${commandPrefix}edit `) === 0 && text.substr(7) || 
-         text.indexOf(`${commandPrefix}create ` === 0) && text.substr(9);
+         text.indexOf(`${commandPrefix}create `) === 0 && text.substr(9);
 }
 
 function isRemoveSuggestion(text) {
