@@ -4,6 +4,10 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+#title {
+	margin-top: 0;
+}
+
 #link {
 	display: flex;
 	flex-direction: row;
@@ -42,6 +46,7 @@ body {
 #url-wrapper {
 	display: flex;
 	flex-direction: row;
+	margin-top: 2px;
 	border: 1px solid #bbb;
 }
 
@@ -62,6 +67,8 @@ body {
 }
 
 label {
+	display: inline-block;
+	margin-top: 4px;
 	color: #888;
 	font-size: 12px;
 	letter-spacing: 1px;

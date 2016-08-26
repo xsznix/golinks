@@ -7,7 +7,7 @@ function $(id) {
 }
 
 function init() {
-  updateTitle();
+  updateTitle(true);
   const $tag = $('tag');
   $tag.value = tag;
   $tag.addEventListener('input', onTagChange);
@@ -29,7 +29,7 @@ function submit() {
 
 document.addEventListener('DOMContentLoaded', init);
 
-function updateTitle() {
+function updateTitle(updateDestination) {
   document.title = `${tag} – Golinks`; 
   chrome.storage.sync.get(tag, obj => {
     if (chrome.runtime.lastError) {
@@ -37,6 +37,12 @@ function updateTitle() {
     }
     if (obj[tag]) {
       $('title').innerText = 'Edit Golink';
+
+      if (updateDestination) {
+        const $url = $('url');
+        $url.value = obj[tag].url;
+        $url.select();
+      }
     } else {
       $('title').innerText = 'Create Golink';
     }
