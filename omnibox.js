@@ -27,29 +27,29 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
 
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   let destination;
-  let isEdit = false;
-  if (isRemoveSuggestion(text)) {
-    Golinks.remove(text.substr(9));
-  } else {
-    const {url} = Golinks.get(text) || {};
-    const editTag = getEditTag(text);
-    if (editTag) {
-      destination = getEditURL(editTag);
-      isEdit = true;
-    } else if (!url) {
-      destination = getEditURL(text);
-      isEdit = true;
+  let isCommand = false;
+  const {url} = Golinks.get(text) || {};
+  const editTag = getEditTag(text);
+  if (editTag) {
+    if (isRemoveSuggestion(text)) {
+      destination = getRemoveURL(editTag);
     } else {
-      destination = url;
-      Golinks.mark(text);
+      destination = getEditURL(editTag);
     }
+    isCommand = true;
+  } else if (!url) {
+    destination = getEditURL(text);
+    isCommand = true;
+  } else {
+    destination = url;
+    Golinks.mark(text);
   }
 
   if (destination) {
     let active = true;
     switch (disposition) {
       case 'currentTab':
-      if (isEdit) {
+      if (isCommand) {
         chrome.tabs.create({
           active: true,
           url: destination,
@@ -100,7 +100,8 @@ function getRemoveURL(tag) {
 
 function getEditTag(text) {
   return text.indexOf(`${commandPrefix}edit `) === 0 && text.substr(7) || 
-         text.indexOf(`${commandPrefix}create `) === 0 && text.substr(9);
+         text.indexOf(`${commandPrefix}create `) === 0 && text.substr(9) ||
+         text.indexOf(`${commandPrefix}delete `) === 0 && text.substr(9);
 }
 
 function isRemoveSuggestion(text) {

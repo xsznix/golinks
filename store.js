@@ -22,7 +22,9 @@ window.Golinks = (() => {
 
     for (const tag in changes) {
       const {newValue} = changes[tag];
-      if (newValue !== void 0) {
+      if (newValue === void 0) {
+        delete theLinks[tag];
+      } else {
         theLinks[tag] = changes[tag].newValue;
         Object.freeze(theLinks[tag]);
       }
