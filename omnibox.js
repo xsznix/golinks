@@ -3,10 +3,11 @@
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
   const {url} = Golinks.get(text) || {};
   if (url) {
-    suggest([{
-      content: url,
+    chrome.omnibox.setDefaultSuggestion({
       description: `<match>${text}</match> <url>${url}</url>`,
-    }, {
+    });
+
+    suggest([{
       content: getEditSuggestion(text),
       description: `Edit Golink for <match>${text}</match>`,
     }, {
@@ -19,11 +20,15 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
       description: `Create Golink for <match>${text}</match>`,
     }];
 
+    chrome.omnibox.setDefaultSuggestion({
+      description: `Create Golink for <match>${text}</match>`,
+    });
+
     // Try to find a golink whose tag starts with what has been entered.
     const {tag, url: url2} = Golinks.getPrefix(text) || {};
     if (url2) {
       suggestions = [{
-        content: url2,
+        content: tag,
         description: `<match>${tag}</match> <url>${url2}</url>`,
       }].concat(suggestions);
     }
@@ -83,7 +88,7 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   }
 });
 
-const commandPrefix = '\0\u200b';
+const commandPrefix = '\u200b\u200b';
 
 function getCreateSuggestion(tag) {
   return `${commandPrefix}create ${tag}`;
