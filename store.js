@@ -1,5 +1,7 @@
 'use strict';
 
+const MAX_SUGGESTIONS = 5;
+
 window.Golinks = (() => {
   let theLinks = {};
 
@@ -40,26 +42,33 @@ window.Golinks = (() => {
     return theLinks[tag];
   }
 
-  function getPrefix(tag) {
-    const nilEarliest = {lastAccessed: -Infinity};
-    let earliest = nilEarliest;
-    let earliestTag;
+  function getSuggestions(tag) {
+    const suggestions = [];
     Object.keys(theLinks).forEach(key => {
       const link = theLinks[key];
       if (key.indexOf(tag) !== 0) {
         return;
       }
-      if (link.lastAccessed > earliest.lastAccessed) {
-        earliest = link;
-        earliestTag = key;
+      let i;
+      for (i = 0; i < suggestions.length; i++) {
+        if (link.lastAccessed > suggestions[i].lastAccessed) {
+          suggestions.splice(i, 0, suggest());
+          break;
+        }
+      }
+      if (i === suggestions.length && suggestions.length < MAX_SUGGESTIONS) {
+        suggestions.push(suggest());
+      }
+
+      function suggest() {
+        return {
+          content: key,
+          description: `<match>${key}</match> <url>${link.url}</url>`,
+        };
       }
     });
 
-    if (earliest !== nilEarliest) {
-      return Object.assign({}, earliest, {tag: earliestTag});
-    } else {
-      return null;
-    }
+    return suggestions;
   }
 
   function set(tag, url) {
@@ -106,5 +115,5 @@ window.Golinks = (() => {
     });
   }
 
-  return {list, get, getPrefix, set, mark, remove};
+  return {list, get, getSuggestions, set, mark, remove};
 })();

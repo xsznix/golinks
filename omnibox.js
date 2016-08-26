@@ -13,23 +13,14 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
     }, {
       content: getRemoveSuggestion(text),
       description: `Delete Golink for <match>${text}</match>`,
-    }]);
+    }].concat(Golinks.getSuggestions(text)));
   } else {
-    let suggestions = [];
-
     chrome.omnibox.setDefaultSuggestion({
       description: `Create Golink for <match>${text}</match>`,
     });
 
     // Try to find a golink whose tag starts with what has been entered.
-    const {tag, url: url2} = Golinks.getPrefix(text) || {};
-    if (url2) {
-      suggestions = [{
-        content: tag,
-        description: `<match>${tag}</match> <url>${url2}</url>`,
-      }];
-    }
-
+    const suggestions = Golinks.getSuggestions(text);
     suggest(suggestions);
   }
 });
