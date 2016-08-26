@@ -3,14 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Edit Golink</title>
+	<link rel="stylesheet" href="edit.css">
 	<script src="edit.js"></script>
 </head>
 <body>
 	<form id="form">
-		<h1 id="title"></h1>
-		<label for="url">URL:</label>
-		<input type="text" id="url" name="url">
-		<input type="submit" value="Save Golink">
+		<h1 id="title">&nbsp;</h1>
+		<label for="tag">Short link</label>
+		<div id="link"><div>go</div><input type="text" id="tag" name="tag"></div>
+		<label for="url">Destination</label>
+		<div id="url-wrapper">
+			<input type="text" id="url" name="url" placeholder="http://">
+			<input type="submit" id="submit" value="Save">
+		</div>
 	</form>
 </body>
 </html>

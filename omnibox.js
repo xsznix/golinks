@@ -1,46 +1,54 @@
 'use strict';
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
-  if (text.indexOf('/') !== -1) {
-    suggest([]);
-    return;
-  }
-
   const {url} = Golinks.get(text) || {};
   if (url) {
     suggest([{
       content: url,
       description: `<match>${text}</match> <url>${url}</url>`,
     }, {
-      content: getEditURL(text),
+      content: getEditSuggestion(text),
       description: `Edit Golink for <match>${text}</match>`,
     }, {
-      content: getRemoveURL(text),
+      content: getRemoveSuggestion(text),
       description: `Delete Golink for <match>${text}</match>`,
     }]);
   } else {
-    suggest([{
-      content: getEditURL(text),
+    let suggestions = [{
+      content: getCreateSuggestion(text),
       description: `Create Golink for <match>${text}</match>`,
-    }]);
+    }];
+
+    // Try to find a golink whose tag starts with what has been entered.
+    const {tag, url: url2} = Golinks.getPrefix(text) || {};
+    if (url2) {
+      suggestions = [{
+        content: url2,
+        description: `<match>${tag}</match> <url>${url2}</url>`,
+      }].concat(suggestions);
+    }
+
+    suggest(suggestions);
   }
 });
 
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   let destination;
   let isEdit = false;
-  if (isRemoveURL(text)) {
-    Golinks.remove(text.substr(text.indexOf('#') + 1));
-  } else if (text.indexOf('/') !== -1) {
-    destination = text;
-    isEdit = isEditURL(text);
+  if (isRemoveSuggestion(text)) {
+    Golinks.remove(text.substr(9));
   } else {
     const {url} = Golinks.get(text) || {};
-    if (url) {
-      destination = url;
-    } else {
+    const editTag = getEditTag(text);
+    if (editTag) {
+      destination = getEditURL(editTag);
+      isEdit = true;
+    } else if (!url) {
       destination = getEditURL(text);
       isEdit = true;
+    } else {
+      destination = url;
+      Golinks.mark(text);
     }
   }
 
@@ -75,6 +83,20 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   }
 });
 
+const commandPrefix = '\0\u200b';
+
+function getCreateSuggestion(tag) {
+  return `${commandPrefix}create ${tag}`;
+}
+
+function getEditSuggestion(tag) {
+  return `${commandPrefix}edit ${tag}`;
+}
+
+function getRemoveSuggestion(tag) {
+  return `${commandPrefix}delete ${tag}`;
+}
+
 function getEditURL(tag) {
   return chrome.extension.getURL(`edit.html#${encodeURIComponent(tag)}`);
 }
@@ -83,10 +105,11 @@ function getRemoveURL(tag) {
   return chrome.extension.getURL(`remove.html#${encodeURIComponent(tag)}`);
 }
 
-function isEditURL(text) {
-  return text.indexOf(chrome.extension.getURL('edit.html') === 0);
+function getEditTag(text) {
+  return text.indexOf(`${commandPrefix}edit `) === 0 && text.substr(7) || 
+         text.indexOf(`${commandPrefix}create ` === 0) && text.substr(9);
 }
 
-function isRemoveURL(text) {
-  return text.indexOf(chrome.extension.getURL('remove.html')) === 0;
+function isRemoveSuggestion(text) {
+  return text.indexOf(`${commandPrefix}delete `) === 0;
 }

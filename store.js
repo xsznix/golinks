@@ -40,6 +40,28 @@ window.Golinks = (() => {
     return theLinks[tag];
   }
 
+  function getPrefix(tag) {
+    const nilEarliest = {lastAccessed: -Infinity};
+    let earliest = nilEarliest;
+    let earliestTag;
+    Object.keys(theLinks).forEach(key => {
+      const link = theLinks[key];
+      if (key.indexOf(tag) !== 0) {
+        return;
+      }
+      if (link.lastAccessed > earliest.lastAccessed) {
+        earliest = link;
+        earliestTag = key;
+      }
+    });
+
+    if (earliest !== nilEarliest) {
+      return Object.assign({}, earliest, {tag: earliestTag});
+    } else {
+      return null;
+    }
+  }
+
   function set(tag, url) {
     const oldValue = theLinks[tag];
     const newValue = {url, lastUpdated: +new Date};
@@ -56,6 +78,22 @@ window.Golinks = (() => {
     });
   }
 
+  function mark(tag) {
+    if (!theLinks[tag]) {
+      return;
+    }
+
+    const oldValue = theLinks[tag];
+    const newValue = Object.assign({}, oldValue, {lastAccessed: +new Date});
+    Object.freeze(newValue);
+    theLinks[tag] = newValue;
+    chrome.storage.sync.set({[tag]: newValue}, () => {
+      if (chrome.runtime.lastError) {
+        theLinks[tag] = oldValue;
+      }
+    });
+  }
+
   function remove(tag) {
     const oldValue = theLinks[tag];
     delete theLinks[tag];
@@ -68,5 +106,5 @@ window.Golinks = (() => {
     });
   }
 
-  return {list, get, set, remove};
+  return {list, get, getPrefix, set, mark, remove};
 })();

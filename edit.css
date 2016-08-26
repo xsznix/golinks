@@ -1,0 +1,69 @@
+body {
+	margin: 32px;
+	background: #eee;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+#link {
+	display: flex;
+	flex-direction: row;
+	margin: 2px 0 8px 0;
+	border: 1px solid #bbb;
+}
+
+#link, #tag {
+	font-family: inherit;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+#link div {
+	padding: 6px 0 6px 4px;
+}
+
+#tag {
+	flex: 1 1;
+	padding: 0 0 0 5px;
+	border: 0;
+	font-weight: 600;
+}
+
+#form {
+	width: 360px;
+	margin: 0 auto;
+	padding: 32px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+
+	background: #fff;
+	box-shadow: 0 2px 6px #e4e4e4;
+}
+
+#url-wrapper {
+	display: flex;
+	flex-direction: row;
+	border: 1px solid #bbb;
+}
+
+#url, #submit {
+	font-family: inherit;
+	font-size: 16px;
+}
+
+#url {
+	flex: 1 1;
+	padding: 4px;
+	margin: 0;
+	border: 0;
+}
+
+#submit {
+	margin: 4px;
+}
+
+label {
+	color: #888;
+	font-size: 12px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
