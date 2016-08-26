@@ -8,6 +8,7 @@ function $(id) {
 
 function init() {
   $('title').innerText = `Delete “${tag}”?`;
+  $('cancel').onclick = close;
   $('form').onsubmit = submit;
 }
 
