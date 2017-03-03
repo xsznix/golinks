@@ -13,8 +13,8 @@
   "background": {
     "persistent": false,
     "scripts": [
-      "store.js",
-      "omnibox.js"
+      "js/store.js",
+      "js/omnibox.js"
     ]
   },
 
