@@ -1,0 +1,72 @@
+body {
+	width: 280px;
+}
+
+#title {
+	margin-top: 12px;
+	font-size: 16px;
+}
+
+#link {
+	display: flex;
+	flex-direction: row;
+	margin: 2px 0 8px 0;
+	border: 1px solid #bbb;
+}
+
+#link, #tag {
+	font-family: inherit;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+#link div {
+	padding: 6px 0 6px 4px;
+}
+
+#tag {
+	flex: 1 1;
+	padding: 0 0 0 5px;
+	border: 0;
+	font-weight: 600;
+}
+
+#url-wrapper {
+	display: flex;
+	flex-direction: row;
+	margin-top: 2px;
+	border: 1px solid #bbb;
+}
+
+#url, #submit {
+	font-family: inherit;
+	font-size: 16px;
+}
+
+#url {
+	flex: 1 1;
+	padding: 4px;
+	margin: 0;
+	border: 0;
+}
+
+#submit {
+	margin: 4px;
+}
+
+label {
+	display: inline-block;
+	margin-top: 4px;
+	color: #888;
+	font-size: 12px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+#manager-link {
+	margin-top: 10px;
+	color: #3498db;
+	font-size: 14px;
+	text-decoration: underline;
+	cursor: pointer;
+}

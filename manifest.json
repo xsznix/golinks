@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Golinks",
   "description": "Your personal, cloud-synced golinks.",
-  "version": "1.0.0",
+  "version": "1.0.1",
 
   "permissions": ["storage", "activeTab"],
 
@@ -16,6 +16,23 @@
       "js/store.js",
       "js/omnibox.js"
     ]
+  },
+
+  "browser_action": {
+    "default_title": "Golinks",
+    "default_popup": "popup.html"
+  },
+
+  "commands": {
+    "_execute_borwser_action": {
+      "description": "Create a golink to the current page.",
+      "suggested_key": {
+        "windows": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L",
+        "chromeos": "Ctrl+Shift+L",
+        "linux": "Ctrl+Shift+L"
+      }
+    }
   },
 
   "web_accessible_resources": [

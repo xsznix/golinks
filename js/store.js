@@ -4,13 +4,25 @@ const MAX_SUGGESTIONS = 5;
 
 window.Golinks = (() => {
   let theLinks = {};
+  let changeListeners = [];
+  let loadListeners = [];
+  let loaded = false;
+
 
   // Initial load.
   chrome.storage.sync.get(null, links => {
     if (chrome.runtime.lastError) {
-      return;
+      console.error(chrome.runtime.lastError);
+      loadListeners.forEach(listener => {
+        listener(null);
+      });
     } else {
       theLinks = links;
+      loaded = true;
+      const theList = list();
+      loadListeners.forEach(listener => {
+        listener(theList);
+      });
     }
   });
 
@@ -29,6 +41,11 @@ window.Golinks = (() => {
         Object.freeze(theLinks[tag]);
       }
     }
+
+    const theNewList = list();
+    changeListeners.forEach(listener => {
+      listener(changes, theNewList);
+    });
   });
 
   function list() {
@@ -117,5 +134,33 @@ window.Golinks = (() => {
     });
   }
 
-  return {list, get, getSuggestions, set, mark, remove};
+  function addChangeListener(callback) {
+    changeListeners.push(callback);
+  }
+
+  function removeChangeListener(callback) {
+    let removed = false;
+    changeListeners.forEach((listener, i) => {
+      if (listener === callback) {
+        changeListeners.splice(i, 1);
+        removed = true;
+        return false;
+      }
+    });
+    return removed;
+  }
+
+  function addLoadListener(callback) {
+    if (loaded) {
+      callback(list());
+    } else {
+      loadListeners.push(callback);
+    }
+  }
+
+  return {
+    list, get, getSuggestions, set, mark, remove,
+    addChangeListener, removeChangeListener,
+    addLoadListener,
+  };
 })();
